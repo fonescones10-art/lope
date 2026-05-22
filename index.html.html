@@ -1,0 +1,302 @@
+
+<h2 class="sr-only"></h2>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Lora:ital,wght@0,400;1,400&display=swap');
+  * { box-sizing: border-box; }
+
+  .wrap {
+    background: #fff5f5;
+    padding: 32px 16px 56px;
+    font-family: 'Lora', serif;
+    position: relative;
+  }
+
+  .bg-hearts { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .bh { position: absolute; color: #E24B4A; opacity: 0.06; font-size: 24px; user-select: none; }
+
+  .letter-card {
+    background: #fff;
+    border: 1.5px solid #F09595;
+    border-radius: 3px;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  .top-bar { height: 5px; background: #A32D2D; border-radius: 2px 2px 0 0; }
+  .bottom-bar { height: 5px; background: #A32D2D; border-radius: 0 0 2px 2px; }
+
+  .photo-zone {
+    position: relative; width: 100%;
+    background: #fff0f0; border-bottom: 1.5px solid #F09595;
+    display: flex; align-items: center; justify-content: center; min-height: 200px;
+  }
+  .photo-zone img.main-photo { width: 100%; height: 300px; object-fit: cover; display: block; }
+  .no-photo-hint {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; color: #D4537E; opacity: 0.5;
+    font-size: 14px; cursor: pointer; padding: 48px 20px; text-align: center;
+  }
+  .no-photo-hint i { font-size: 36px; }
+  .floral-frame { position: absolute; inset: 0; pointer-events: none; }
+
+  .gallery-strip {
+    display: flex; gap: 6px; padding: 8px 10px;
+    background: #fff8f8; border-bottom: 1px solid #F9C0C0;
+    overflow-x: auto; min-height: 60px; align-items: center;
+  }
+  .gallery-strip::-webkit-scrollbar { height: 3px; }
+  .gallery-strip::-webkit-scrollbar-thumb { background: #F09595; border-radius: 2px; }
+
+  .thumb {
+    position: relative; width: 52px; height: 52px;
+    flex-shrink: 0; border-radius: 3px; overflow: hidden;
+    border: 1.5px solid #F09595; cursor: pointer;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb.active { border: 2px solid #A32D2D; }
+  .thumb-del {
+    position: absolute; top: 2px; right: 2px;
+    background: rgba(163,45,45,0.8); border: none; border-radius: 50%;
+    width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #fff; font-size: 10px; opacity: 0; transition: opacity 0.15s;
+  }
+  .thumb:hover .thumb-del { opacity: 1; }
+  .add-thumb {
+    width: 52px; height: 52px; flex-shrink: 0;
+    border: 1.5px dashed #D4537E; border-radius: 3px;
+    background: transparent; color: #D4537E; font-size: 22px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .add-thumb:hover { background: #fff0f0; }
+
+  .letter-body { padding: 32px 36px 40px; position: relative; }
+
+  .stamp {
+    position: absolute; top: -26px; right: 28px;
+    width: 44px; height: 52px;
+    border: 1.5px solid #E24B4A; border-radius: 2px;
+    background: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    box-shadow: 0 0 0 3px #fff;
+  }
+  .stamp i { font-size: 18px; color: #A32D2D; }
+  .stamp-txt { font-size: 7px; color: #A32D2D; letter-spacing: 0.06em; font-family: sans-serif; }
+
+  .corner-heart { position: absolute; color: #E24B4A; font-size: 15px; opacity: 0.4; }
+  .ch-tl { top: 8px; left: 10px; } .ch-tr { top: 8px; right: 10px; }
+  .ch-bl { bottom: 8px; left: 10px; } .ch-br { bottom: 8px; right: 10px; }
+
+  .divider {
+    display: flex; align-items: center; gap: 8px; margin: 16px 0; color: #E24B4A;
+  }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 0.5px; background: #E24B4A; opacity: 0.4; }
+  .divider span { font-size: 14px; opacity: 0.5; }
+
+  .editable {
+    outline: none; border: none; background: transparent;
+    width: 100%; cursor: text; font-family: inherit;
+    display: block; color: #501313;
+  }
+
+  .f-to {
+    font-family: 'Dancing Script', cursive;
+    font-size: 22px; color: #A32D2D;
+    border-bottom: 1px dashed #F09595;
+    padding-bottom: 5px; margin-bottom: 10px;
+  }
+  .f-date {
+    font-size: 12px; color: #A32D2D; opacity: 0.75;
+    text-align: right; margin-bottom: 14px;
+  }
+  .f-body {
+    font-size: 15px; line-height: 2; color: #501313;
+    resize: none; overflow: hidden; min-height: 40px;
+    caret-color: #A32D2D;
+  }
+  .f-sign {
+    font-family: 'Dancing Script', cursive;
+    font-size: 26px; color: #A32D2D;
+    text-align: right; margin-top: 20px;
+  }
+</style>
+
+<div class="wrap">
+  <div class="bg-hearts" id="bgH"></div>
+
+  <div class="letter-card">
+    <div class="top-bar"></div>
+
+    <div class="photo-zone">
+      <div class="no-photo-hint" id="noPhotoHint" onclick="document.getElementById('photoIn').click()">
+        <i class="ti ti-camera-heart" aria-hidden="true"></i>
+        <span>klik untuk tambah foto</span>
+      </div>
+      <img class="main-photo" id="mainPhoto" src="" alt="Foto utama" style="display:none;">
+      <svg class="floral-frame" viewBox="0 0 540 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <g opacity="0.85">
+          <text x="4" y="26" font-size="22">🌹</text>
+          <text x="28" y="13" font-size="15" fill="#D4537E">✿</text>
+          <text x="6" y="50" font-size="13" fill="#F09595">❀</text>
+          <text x="28" y="42" font-size="11" fill="#A32D2D">♥</text>
+          <text x="48" y="20" font-size="12" fill="#E24B4A">✾</text>
+          <text x="8" y="74" font-size="12" fill="#D4537E">✿</text>
+          <text x="34" y="62" font-size="10" fill="#F09595">❁</text>
+          <text x="4" y="100" font-size="11" fill="#E24B4A">♥</text>
+          <text x="6" y="124" font-size="13" fill="#D4537E">❀</text>
+          <text x="4" y="150" font-size="10" fill="#F09595">✿</text>
+          <text x="6" y="174" font-size="12" fill="#E24B4A">♥</text>
+          <text x="4" y="200" font-size="11" fill="#D4537E">❁</text>
+          <text x="6" y="224" font-size="13" fill="#F09595">✾</text>
+          <text x="4" y="250" font-size="10" fill="#A32D2D">♥</text>
+          <text x="8" y="272" font-size="12" fill="#E24B4A">✿</text>
+          <text x="28" y="285" font-size="15" fill="#D4537E">❀</text>
+          <text x="4" y="296" font-size="22">🌹</text>
+          <text x="494" y="26" font-size="22">🌹</text>
+          <text x="500" y="13" font-size="15" fill="#D4537E">✿</text>
+          <text x="522" y="50" font-size="13" fill="#F09595">❀</text>
+          <text x="502" y="42" font-size="11" fill="#A32D2D">♥</text>
+          <text x="480" y="20" font-size="12" fill="#E24B4A">✾</text>
+          <text x="520" y="74" font-size="12" fill="#D4537E">✿</text>
+          <text x="496" y="62" font-size="10" fill="#F09595">❁</text>
+          <text x="526" y="100" font-size="11" fill="#E24B4A">♥</text>
+          <text x="522" y="124" font-size="13" fill="#D4537E">❀</text>
+          <text x="526" y="150" font-size="10" fill="#F09595">✿</text>
+          <text x="522" y="174" font-size="12" fill="#E24B4A">♥</text>
+          <text x="526" y="200" font-size="11" fill="#D4537E">❁</text>
+          <text x="522" y="224" font-size="13" fill="#F09595">✾</text>
+          <text x="526" y="250" font-size="10" fill="#A32D2D">♥</text>
+          <text x="520" y="272" font-size="12" fill="#E24B4A">✿</text>
+          <text x="500" y="285" font-size="15" fill="#D4537E">❀</text>
+          <text x="494" y="296" font-size="22">🌹</text>
+          <text x="60" y="8" font-size="13" fill="#E24B4A">✿</text>
+          <text x="96" y="6" font-size="10" fill="#D4537E">♥</text>
+          <text x="132" y="10" font-size="14" fill="#F09595">❀</text>
+          <text x="170" y="5" font-size="11" fill="#E24B4A">✾</text>
+          <text x="208" y="9" font-size="12" fill="#A32D2D">✿</text>
+          <text x="248" y="5" font-size="10" fill="#D4537E">♥</text>
+          <text x="284" y="10" font-size="14" fill="#E24B4A">❁</text>
+          <text x="322" y="6" font-size="11" fill="#F09595">✿</text>
+          <text x="360" y="10" font-size="13" fill="#D4537E">❀</text>
+          <text x="398" y="5" font-size="10" fill="#A32D2D">♥</text>
+          <text x="432" y="9" font-size="12" fill="#E24B4A">✾</text>
+          <text x="464" y="6" font-size="11" fill="#D4537E">✿</text>
+          <text x="60" y="296" font-size="13" fill="#E24B4A">✿</text>
+          <text x="96" y="294" font-size="10" fill="#D4537E">♥</text>
+          <text x="132" y="297" font-size="14" fill="#F09595">❀</text>
+          <text x="170" y="293" font-size="11" fill="#E24B4A">✾</text>
+          <text x="208" y="297" font-size="12" fill="#A32D2D">✿</text>
+          <text x="248" y="293" font-size="10" fill="#D4537E">♥</text>
+          <text x="284" y="297" font-size="14" fill="#E24B4A">❁</text>
+          <text x="322" y="294" font-size="11" fill="#F09595">✿</text>
+          <text x="360" y="297" font-size="13" fill="#D4537E">❀</text>
+          <text x="398" y="293" font-size="10" fill="#A32D2D">♥</text>
+          <text x="432" y="297" font-size="12" fill="#E24B4A">✾</text>
+          <text x="464" y="294" font-size="11" fill="#D4537E">✿</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="gallery-strip" id="galleryStrip">
+      <button class="add-thumb" onclick="document.getElementById('photoIn').click()" aria-label="Tambah foto">
+        <i class="ti ti-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <input type="file" id="photoIn" accept="image/*" multiple style="display:none" onchange="addPhotos(event)">
+
+    <div class="letter-body">
+      <div class="stamp">
+        <i class="ti ti-heart" aria-hidden="true"></i>
+        <span class="stamp-txt"></span>
+      </div>
+      <span class="corner-heart ch-tl"><i class="ti ti-heart" aria-hidden="true"></i></span>
+      <span class="corner-heart ch-tr"><i class="ti ti-heart" aria-hidden="true"></i></span>
+      <span class="corner-heart ch-bl"><i class="ti ti-heart" aria-hidden="true"></i></span>
+      <span class="corner-heart ch-br"><i class="ti ti-heart" aria-hidden="true"></i></span>
+
+      <input class="editable f-to" type="text" value="Untuk kamu yang selalu di hatiku ♡" aria-label="Nama penerima">
+      <input class="editable f-date" type="text" value="Surabaya, Mei 2026" aria-label="Tanggal">
+
+      <div class="divider"><span>♥</span></div>
+
+      <textarea class="editable f-body" id="bodyText" aria-label="Isi surat">Sayangku,
+
+Setiap momen bersamamu adalah halaman terbaik dari cerita hidupku. Kamu adalah rumah — tempat aku selalu ingin pulang.
+
+Terima kasih sudah ada di sisiku, hari ini dan seterusnya.
+
+Dengan cinta yang tak pernah padam,</textarea>
+
+      <input class="editable f-sign" type="text" value="❤ Milikmu selamanya" aria-label="Tanda tangan">
+    </div>
+
+    <div class="bottom-bar"></div>
+  </div>
+</div>
+
+<script>
+const bpos = [
+  [4,5],[16,2],[30,8],[46,3],[62,7],[78,2],[91,6],
+  [2,22],[9,48],[20,36],[36,62],[52,28],[68,52],[84,40],[94,58],
+  [5,76],[18,86],[34,80],[50,70],[66,84],[80,73],[93,78]
+];
+const bgH = document.getElementById('bgH');
+bpos.forEach(([x,y]) => {
+  const s = document.createElement('span');
+  s.className = 'bh';
+  s.style.left = x + '%'; s.style.top = y + '%';
+  s.textContent = '♥';
+  bgH.appendChild(s);
+});
+
+const bodyEl = document.getElementById('bodyText');
+function autoResize() {
+  bodyEl.style.height = 'auto';
+  bodyEl.style.height = bodyEl.scrollHeight + 'px';
+}
+bodyEl.addEventListener('input', autoResize);
+setTimeout(autoResize, 100);
+
+let photos = [], cur = -1;
+
+function addPhotos(e) {
+  Array.from(e.target.files).forEach(f => photos.push({ url: URL.createObjectURL(f), name: f.name }));
+  if (cur === -1 && photos.length) cur = 0;
+  render();
+  e.target.value = '';
+}
+
+function setMain(i) {
+  cur = i;
+  const img = document.getElementById('mainPhoto');
+  const hint = document.getElementById('noPhotoHint');
+  if (photos.length) {
+    img.src = photos[i].url; img.style.display = 'block'; hint.style.display = 'none';
+  } else {
+    img.style.display = 'none'; hint.style.display = 'flex';
+  }
+  renderStrip();
+}
+
+function delPhoto(e, i) {
+  e.stopPropagation();
+  URL.revokeObjectURL(photos[i].url);
+  photos.splice(i, 1);
+  if (cur >= photos.length) cur = photos.length - 1;
+  render();
+}
+
+function render() { setMain(cur); }
+
+function renderStrip() {
+  const strip = document.getElementById('galleryStrip');
+  const thumbs = photos.map((p, i) => `
+    <div class="thumb ${i === cur ? 'active' : ''}" onclick="setMain(${i})">
+      <img src="${p.url}" alt="${p.name}" loading="lazy">
+      <button class="thumb-del" onclick="delPhoto(event,${i})" aria-label="Hapus foto"><i class="ti ti-x"></i></button>
+    </div>
+  `).join('');
+  strip.innerHTML = thumbs + `<button class="add-thumb" onclick="document.getElementById('photoIn').click()" aria-label="Tambah foto"><i class="ti ti-plus" aria-hidden="true"></i></button>`;
+}
+</script>
